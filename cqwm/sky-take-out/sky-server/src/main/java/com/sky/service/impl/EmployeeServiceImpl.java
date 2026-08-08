@@ -1,6 +1,8 @@
 package com.sky.service.impl;
 
 import ch.qos.logback.core.joran.spi.ElementPath;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.JwtClaimsConstant;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
@@ -8,11 +10,13 @@ import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
+import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
+import com.sky.result.PageResult;
 import com.sky.service.EmployeeService;
 import com.sky.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -71,7 +75,6 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 新增员工
      * @param employeeDTO
      */
-    @Override
     public void save(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         //对象属性拷贝
@@ -93,6 +96,66 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setUpdateUser(empID);
 
         employeeMapper.insert(employee);
+    }
+
+    /**
+     * 分页查询员工信息
+     * @param employeePageQueryDTO
+     * @return
+     */
+    public PageResult pageQurey(EmployeePageQueryDTO employeePageQueryDTO){
+        //开始分页查询
+        PageHelper.startPage(employeePageQueryDTO.getPage(),employeePageQueryDTO.getPageSize());
+
+        Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
+        PageResult pageResult = new PageResult();
+
+        pageResult.setTotal(page.getTotal());
+        pageResult.setRecords(page.getResult());
+
+        return pageResult;
+    }
+
+    /**
+     * 启用/禁用 员工账号
+     * @param status
+     * @param id
+     */
+    public void startOrstop(Integer status, Long id) {
+
+        Employee employee = Employee.builder()
+                .status(status)
+                .id(id)
+                .build();
+
+        employeeMapper.update(employee);
+    }
+
+    /**
+     * 根据id查询员工信息
+     * @param id
+     * @return
+     */
+    public Employee getByID(Long id) {
+        Employee employee = employeeMapper.getByID(id);
+        employee.setPassword("****");
+        return employee;
+    }
+
+    /**
+     * 修改员工信息
+     * @param employeeDTO
+     */
+    public void edit(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        //对象属性拷贝
+        BeanUtils.copyProperties(employeeDTO,employee);
+        //设置更新时间
+        employee.setUpdateTime(LocalDateTime.now());
+        long empID = BaseContext.getCurrentId();
+        employee.setUpdateUser(empID);
+
+        employeeMapper.update(employee);
     }
 
 }
