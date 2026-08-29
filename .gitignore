@@ -1,0 +1,47 @@
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+**/.idea/
+**/.idea.bak/
+
+# Java / Maven 编译产物
+**/target/
+*.class
+
+# Node
+**/node_modules/
+
+# 小程序编译产物
+**/unpackage/
+
+# 前端构建产物
+cqwm/sky/
+**/dist/
+
+# 安装包与压缩包
+*.exe
+*.msi
+*.dmg
+*.pkg
+*.zip
+*.tar.gz
+*.tgz
+*.gz
+*.rar
+*.7z
+
+# sourcemap
+*.map
+
+# 日志
+*.log
+
+# 教学资料（只提交项目代码）
+cqwm/讲义/
+cqwm/资料/
+
+# 个人配置不入库
+/CLAUDE.md
+/README.md
