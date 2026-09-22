@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.DishMapper">
+
+    <!-- useGeneratedKeys 必须配 keyProperty="id"，否则插入后 dish.getId() 拿不到主键，
+         后面给 dish_flavor 写 dish_id 时会因为 dish_id 是 NOT NULL 而失败 -->
+    <insert id="saveDish" useGeneratedKeys="true" keyProperty="id">
+        insert into dish (name, category_id, price, image, description, status, create_time, update_time, create_user, update_user)
+        values (#{name}, #{categoryId}, #{price}, #{image}, #{description}, #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+
+    <update id="update">
+        update dish set
+        <if test="name != null">
+            name = #{name},
+        </if>
+        <if test="categoryId != null">
+            category_id = #{categoryId},
+        </if>
+        <if test="price != null">
+            price = #{price},
+        </if>
+        <if test="image != null">
+            image = #{image},
+        </if>
+        <if test="description != null">
+            description = #{description},
+        </if>
+        <if test="status != null">
+            status = #{status},
+        </if>
+        <if test="updateTime != null">
+            update_time = #{updateTime},
+        </if>
+        <if test="updateUser != null">
+            update_user = #{updateUser}
+        </if>
+        where id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        update dish
+        set status = #{status},
+        update_time = #{updateTime},
+        update_user = #{updateUser}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteByDishIds">
+        delete from dish where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="pageQuery" resultType="com.sky.vo.DishVO">
+        select
+            d.id,
+            d.name,
+            d.category_id as categoryId,
+            d.price,
+            d.image,
+            d.description,
+            d.status,
+            d.update_time as updateTime,
+            c.name as categoryName
+        from dish d
+        left join category c on d.category_id = c.id
+        <where>
+            <if test = "name != null">
+                d.name like CONCAT('%', #{name}, '%')
+            </if>
+            <if test = "categoryId != null">
+                and d.category_id = #{categoryId}
+            </if>
+            <if test = "status != null">
+                and d.status = #{status}
+            </if>
+        </where>
+        order by d.create_time desc
+    </select>
+
+
+    <select id="checkStatusByIds" resultType="java.lang.Integer">
+        select count(*) from dish where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and status = 1
+    </select>
+
+    <select id="getById" resultType="com.sky.vo.DishVO">
+        select
+            d.id,
+            d.name,
+            d.category_id as categoryId,
+            d.price,
+            d.image,
+            d.description,
+            d.status,
+            d.update_time as updateTime,
+            c.name as categoryName
+        from dish d
+        left join category c on d.category_id = c.id
+        where d.id = #{id}
+    </select>
+
+</mapper>
