@@ -20,3 +20,7 @@ sky:
     accessKeyId: ${OSS_ACCESS_KEY_ID}
     accessKeySecret: ${OSS_ACCESS_KEY_SECRET}
     bucketName: skycleanly
+
+  wechat:
+    appid: wxdff9aca4a61dd56b
+    secret: e77a3d51d0905698bcb7a6b932cb3360
