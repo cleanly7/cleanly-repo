@@ -10,6 +10,7 @@ import com.sky.service.UserService;
 import com.sky.utils.JwtUtil;
 import com.sky.vo.UserLoginVO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,5 +52,20 @@ public class UserController {
                 .build();
 
         return Result.success(userLoginVO);
+    }
+
+    /**
+     * 用户退出
+     *
+     * 本项目用的是无状态 JWT：服务端不保存会话，退出时前端清掉本地 token 即可，
+     * 所以这里只需返回成功（接口文档：POST /user/user/logout）
+     *
+     * @return
+     */
+    @PostMapping("/logout")
+    @ApiOperation("用户退出")
+    public Result<String> logout() {
+        log.info("用户退出");
+        return Result.success();
     }
 }
