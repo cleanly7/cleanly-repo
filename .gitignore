@@ -5,6 +5,10 @@
 .idea/
 **/.idea/
 **/.idea.bak/
+*.iml
+# JetBrains Junie（AI 助手插件生成的配置/记忆）
+.junie/
+**/.junie/
 
 # Java / Maven 编译产物
 **/target/
@@ -44,4 +48,3 @@ cqwm/资料/
 
 # 个人配置不入库
 /CLAUDE.md
-/README.md
